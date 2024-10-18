@@ -1,0 +1,50 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "axios": "^1.4.0",
+        "laravel-vite-plugin": "^0.7.5",
+        "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
+        "@fontsource/roboto": "^5.0.3",
+        "@hookform/resolvers": "^3.1.1",
+        "@inertiajs/react": "^1.0.8",
+        "@mui/icons-material": "^5.11.16",
+        "@mui/material": "^5.13.6",
+        "@mui/x-date-pickers": "^6.9.1",
+        "@tabler/icons-react": "^2.22.0",
+        "dayjs": "^1.11.8",
+        "echarts-for-react": "^3.0.2",
+        "i18next": "^23.2.1",
+        "jspdf": "^2.5.1",
+        "jspdf-autotable": "^3.5.29",
+        "kbar": "^0.1.0-beta.40",
+        "lodash.throttle": "^4.1.1",
+        "moment": "^2.29.4",
+        "mui-datatables": "^4.3.0",
+        "next-barcode": "^1.4.0",
+        "pdfkit": "^0.13.0",
+        "print-js": "^1.6.0",
+        "react": "^18.2.0",
+        "react-cropper": "^2.3.3",
+        "react-dom": "^18.2.0",
+        "react-flatpickr": "^3.10.13",
+        "react-hook-form": "^7.45.0",
+        "react-i18next": "^13.0.0",
+        "react-moment": "^1.1.3",
+        "react-pdf": "^7.7.0",
+        "react-qr-code": "^2.0.12",
+        "react-to-print": "^2.14.13",
+        "react-toastify": "^9.1.3",
+        "save-dev": "^0.0.1-security",
+        "xlsx": "^0.18.5",
+        "yup": "^1.2.0"
+    }
+}

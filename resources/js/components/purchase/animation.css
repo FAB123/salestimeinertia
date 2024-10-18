@@ -1,0 +1,84 @@
+.cart_box {
+  overflow: hidden;
+  position: relative;
+  padding: 20px;
+}
+
+.cart_box .animate_top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #9609dc);
+  animation: animate_one 2s linear infinite;
+}
+
+.cart_box .animate_right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, #dc0988);
+  animation: animate_two 2s linear infinite;
+  animation-delay: 1s;
+}
+
+.cart_box .animate_bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(to left, transparent, #9609dc);
+  animation: animate_three 2s linear infinite;
+  animation-delay: 2s;
+}
+
+.cart_box .animate_left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to top, transparent, #dc0988);
+  animation: animate_four 2s linear infinite;
+  animation-delay: 3s;
+}
+
+@keyframes animate_one {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes animate_two {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes animate_three {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes animate_four {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
