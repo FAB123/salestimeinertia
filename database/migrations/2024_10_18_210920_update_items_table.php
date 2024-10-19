@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('items', function (Blueprint $table) {
-            $table->unsignedBigInteger('pos_view')->default(0)->after('pic_filename');
+            $table->boolean('pos_view')->default(0)->after('pic_filename');
+            $table->boolean('price_updated')->default(1)->after('pos_view');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('items', function (Blueprint $table) {
             $table->drop('pos_view');
+            $table->drop('price_updated');
         });
     }
 };

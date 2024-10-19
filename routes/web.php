@@ -116,6 +116,7 @@ Route::middleware('auth')->group(function () {
         Route::group(['prefix' => 'items'], function () {
             Route::get('view_items', 'index')->middleware('validate.permission:view_items')->name('view_items');
             Route::get('add_items', 'add_items')->middleware('validate.permission:add_items')->name('add_items');
+            Route::get('price_updater', 'price_updater')->middleware('validate.permission:price_updater')->name('price_updater');
             Route::get('edit_item/{item_id}', 'edit_item')->name('edit_item');
             Route::get('opening_stock', 'opening_stock')->middleware('validate.permission:opening_stock')->name('opening_stock');
             Route::get("get_all_items/{page}/{size}/{keyword}/{sortitem}/{sortdir}", "getAll");
@@ -127,6 +128,8 @@ Route::middleware('auth')->group(function () {
             Route::post('save_item', 'save_item');
             Route::post('bulkinsert', 'bulk_insert');
             Route::post('generate_barcode', 'generate_barcode');
+            Route::post('save_price_update', 'save_price_update');
+            Route::get('get_item_by_barcode/{barcode}','get_item_by_barcode');
 
             //search items with barcode / item name
             Route::get('search_items/{type}/{keyword}', 'search_items');

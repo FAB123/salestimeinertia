@@ -29,6 +29,11 @@ class ItemController extends Controller
     {
         return Inertia::render('Screens/items/OpeningStock');
     }
+    public function price_updater()
+    {
+        return Inertia::render('Screens/items/PriceUpdater');
+    }
+
     public function edit_item($item_id)
     {
         return Inertia::render('Screens/items/AddItems', ['itemId' => $item_id]);
@@ -145,6 +150,30 @@ class ItemController extends Controller
         }
     }
 
+    public function save_price_update(Request $request)
+    {
+        try {
+            Item::updateOrCreate([
+                'barcode' => $request->input('barcode'),
+            ], [
+                'item_name' => $request->input('item_name'),
+                'item_name_ar' => $request->input('item_name_ar'),
+                'category' => $request->input('category'),
+                'cost_price' => $request->input('cost_price'),
+                'unit_price' => $request->input('unit_price'),
+                'price_updated' => 1
+            ]);
+
+            return response()->json([
+                'error' => false,
+            ], 200);
+        } catch (\Exception $e) {
+            info($e->getMessage());
+            return response()->json([
+                'error' => true,
+            ], 200);
+        }
+    }
     //delete Item from array
     public function delete_item(Request $request)
     {
@@ -175,6 +204,16 @@ class ItemController extends Controller
         $item['pic_filename'] = $item->pic_filename ? asset('storage/item_img/' . $item->pic_filename) : null;
 
         return response()->json([
+            'data' => $item,
+        ], 200);
+    }
+
+    //get item by barcode
+    public function get_item_by_barcode($barcode)
+    {
+        $item = Item::where('barcode', $barcode)->first();
+        return response()->json([
+            'status' => $item ? true : false,
             'data' => $item,
         ], 200);
     }
@@ -282,59 +321,73 @@ class ItemController extends Controller
     //insert bulk items from excel
     public function bulk_insert(Request $request)
     {
-        ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', 60000000);
+        ini_set('memory_limit', '1000M');
         $failed_data = array();
         foreach ($request->input() as $data) {
+
             try {
-                //db transaction starting
-                DB::beginTransaction();
-                $item = Item::Create([
-                    'barcode' => isset($data['barcode']) ? $data['barcode'] : null,
-                    'item_name' => isset($data['item_name']) ? $data['item_name'] : null,
-                    'item_name_ar' => isset($data['item_name_ar']) ? $data['item_name_ar'] : null,
-                    'category' => isset($data['category']) ? $data['category'] : "",
-                    'cost_price' => isset($data['cost_price']) ? $data['cost_price'] : 0,
-                    'unit_price' => isset($data['unit_price']) ? $data['unit_price'] : 0,
-                    'wholesale_price' => isset($data['wholesale_price']) ? $data['wholesale_price'] : 0,
-                    'minimum_price' => isset($data['minimum_price']) ? $data['minimum_price'] : 0,
-                    'reorder_level' => isset($data['reorder_level']) ? $data['reorder_level'] : 0,
-                    'allowdesc' => isset($data['allowdesc']) ? $data['allowdesc'] : 0,
-                    'is_serialized' => isset($data['allowserial']) ? $data['allowserial'] : 0,
-                    'shelf' => isset($data['shelf']) ? $data['shelf'] : null,
-                    'stock_type' => isset($data['stock_type']) ? $data['stock_type'] : 1,
-                    'unit_type' => isset($data['unit_type']) ? $data['unit_type'] : 1,
-                    'is_boxed' => 0,
-                    'description' => isset($data['comments']) ? $data['comments'] : null,
-                ]);
+                info(date("H:i:s"));
 
-                $vat_list = TaxScheme::all();
-                foreach ($vat_list as $vat) {
-                    if ($vat['percent']) {
-                        ItemsTax::insert([
-                            'item_id' => $item->item_id,
-                            'tax_name' => $vat['tax_name'],
-                            'percent' => $vat['percent'],
-                        ]);
+                $itemExists = Item::where('barcode', $data['barcode'])->exists();
+
+                if (!$itemExists) {
+
+                    //db transaction starting
+                    DB::beginTransaction();
+                    $item = Item::Create([
+                        'barcode' => isset($data['barcode']) ? $data['barcode'] : null,
+                        'item_name' => isset($data['item_name']) ? $data['item_name'] : null,
+                        'item_name_ar' => isset($data['item_name_ar']) ? $data['item_name_ar'] : null,
+                        'category' => isset($data['category']) ? $data['category'] : "",
+                        'cost_price' => isset($data['cost_price']) && $data['cost_price'] !== "NULL" ? $data['cost_price'] : 0,
+                        'unit_price' => isset($data['unit_price']) && $data['unit_price'] !== "" ? $data['unit_price'] : 0,
+                        // 'cost_price' => isset($data['cost_price']) ? $data['cost_price'] == "" ? 0 : $data['cost_price'] : 0,
+                        // 'unit_price' => isset($data['unit_price']) ? $data['unit_price'] : 0,
+                        'wholesale_price' => isset($data['wholesale_price']) ? $data['wholesale_price'] : 0,
+                        'minimum_price' => isset($data['minimum_price']) ? $data['minimum_price'] : 0,
+                        'reorder_level' => isset($data['reorder_level']) ? $data['reorder_level'] : 0,
+                        'allowdesc' => isset($data['allowdesc']) ? $data['allowdesc'] : 0,
+                        'is_serialized' => isset($data['allowserial']) ? $data['allowserial'] : 0,
+                        'shelf' => isset($data['shelf']) ? $data['shelf'] : null,
+                        'stock_type' => isset($data['stock_type']) ? $data['stock_type'] : 1,
+                        'unit_type' => isset($data['unit_type']) ? $data['unit_type'] : 1,
+                        'is_boxed' => 0,
+                        'description' => isset($data['comments']) ? $data['comments'] : null,
+                    ]);
+
+                    $vat_list = TaxScheme::all();
+                    foreach ($vat_list as $vat) {
+                        if ($vat['percent']) {
+                            ItemsTax::insert([
+                                'item_id' => $item->item_id,
+                                'tax_name' => $vat['tax_name'],
+                                'percent' => $vat['percent'],
+                            ]);
+                        }
                     }
-                }
 
-                // pos_items_quantities
-                $locations = StockLocation::all();
-                foreach ($locations as $location) {
-                    ItemsQuantity::updateOrInsert(
-                        ['location_id' => $location['location_id'], 'item_id' => $item['item_id']],
-                        ['quantity' => 0]
-                    );
+                    // pos_items_quantities
+                    $locations = StockLocation::all();
+                    foreach ($locations as $location) {
+                        ItemsQuantity::updateOrInsert(
+                            ['location_id' => $location['location_id'], 'item_id' => $item['item_id']],
+                            ['quantity' => 0]
+                        );
 
-                    AccountOpeningBalance::updateOrInsert(
-                        ['account_sub_id' => $item['item_id'], 'location_id' => $location['location_id'], 'account_id' => 211, 'year' => date('Y')],
-                        ['amount' => 0, 'inserted_by' => decrypt(auth()->user()->encrypted_employee)]
-                    );
+                        AccountOpeningBalance::updateOrInsert(
+                            ['account_sub_id' => $item['item_id'], 'location_id' => $location['location_id'], 'account_id' => 211, 'year' => date('Y')],
+                            ['amount' => 0, 'inserted_by' => decrypt(auth()->user()->encrypted_employee)]
+                        );
+                    }
+                    DB::commit();
                 }
-                DB::commit();
             } catch (\Exception $e) {
+                info($data['barcode']);
+
+                DB::rollBack();
                 $data["error"] = $e;
+                info($e);
                 $failed_data[] = $data;
             }
         }

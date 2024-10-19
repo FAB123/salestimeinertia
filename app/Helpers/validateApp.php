@@ -30,30 +30,34 @@ if (!function_exists('validateAppStatus')) {
     function validateAppStatus()
     {
         $config_data = Configuration::get();
-        if ($config_data->find('version_data')) {
-            //reg_key
+
+        // Check if version data exists for activation
+        $version_data = $config_data->find('version_data');
+
+        if ($version_data) {
             $reg_key = get_activation_code();
-            if (md5($reg_key) != $config_data->find('version_data')->value) {
+            if (md5($reg_key) != $version_data->value) {
                 return false;
-            } else {
-                return 'Activated';
             }
-        } else {
-            //trial validator
-            if ($config_data->find('version_info')) {
-                $datediff = check_version();
-                if ($datediff > 0) {
-                    return strval($datediff);
-                }
-                return false;
-            } else {
-                Configuration::updateOrCreate([
-                    'key' => 'version_info',
-                    'value' => base64_encode(time()),
-                ]);
-                return strval(check_version());
-            }
+            return 'Activated';
         }
+
+        // Check for trial version info
+        $version_info = $config_data->find('version_info');
+        if ($version_info) {
+            $datediff = check_version();
+            if ($datediff > 0) {
+                return strval($datediff);
+            }
+            return false;
+        }
+
+        // If no version_info exists, create trial version
+        Configuration::updateOrCreate([
+            'key' => 'version_info',
+            'value' => base64_encode(time()),
+        ]);
+        return strval(check_version());
     }
 }
 

@@ -42,6 +42,14 @@ const itemHelper = {
     //   { value: "2", label: "LTR" },
     //   { value: "3", label: "KG" },
     // ],
+    priceChecker: {
+        barcode: "",
+        item_name: "",
+        item_name_ar: "",
+        category: "",
+        cost_price: "0.00",
+        unit_price: "0.00",
+    },
     initialValues: (tax_scheme) => {
         return {
             barcode: "",

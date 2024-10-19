@@ -116,6 +116,9 @@ const menuData = [
             {
                 label: "opening_stock",
             },
+            {
+                label: "price_updater",
+            },
         ],
     },
     {
@@ -238,6 +241,9 @@ const permissionItemList = [
             },
             {
                 label: "opening_stock",
+            },
+            {
+                label: "price_updater",
             },
         ],
     },

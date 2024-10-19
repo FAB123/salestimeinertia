@@ -39,8 +39,11 @@ export const SEARCHSALEITEMLIST = "/items/search_items/S/";
 export const SEARCHPURCHASEITEMLIST = "/items/search_items/P/";
 export const GETITEMBYID = "/items/get_item_by_id/";
 export const VALIDATEBARCODE = "/items/validate_barcode/";
+export const GETITEMBYBARCODE = "/items/get_item_by_barcode"
 export const GENERATEBARCODE = "/items/generate_barcode";
 export const GETINVENTORYDETAILS = "/items/get_inventory_details";
+export const SAVEPRICEUPDATE = "/items/save_price_update";
+
 
 //opening balance
 export const GETITEMSOB = "/items/search_items_for_ob";

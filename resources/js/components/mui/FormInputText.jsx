@@ -17,6 +17,7 @@ export const FormInputText = ({
     label,
     type,
     multiline,
+    itemRef,
     size,
     helperText,
     preappend,
@@ -39,6 +40,7 @@ export const FormInputText = ({
                             helperText={error ? error.message : helperText}
                             error={!!error}
                             onChange={onChange}
+                            inputRef={itemRef}
                             fullWidth={true}
                             size={size === "small" ? "small" : "medium"}
                             onKeyDown={onKeyDown}
